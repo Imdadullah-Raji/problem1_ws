@@ -26,15 +26,32 @@ class Turtle_mover:
             self.forward(5)
         
         elif self.command== 'l':
-            print('Turning left')
+            rospy.loginfo('Turning left')
             self.turn('l')
         elif self.command== 'r':
-            print('Turning right')
+            rospy.loginfo('Turning right')
             self.turn('r')
         elif self.command== 'H':
             self.heal()
             
+        def forward(self, time:float):
+        #moves the turtle forward for 2 s
+        start_time = rospy.Time.now().to_sec()
+        msg=Twist()
+        if self.battery<0:
+            rospy.loginfo("Battery Low!")
+            return
+        while rospy.Time.now().to_sec() - start_time < time:
+            msg.linear.x= 1.0
+            msg.angular.z=0.0
+            self.pub.publish(msg)
+            self.rate.sleep()
             
+        msg.linear.x = 0.0  # Stop moving
+        self.pub.publish(msg)
+        self.battery-=time*5
+        rospy.loginfo("Current Battery Level:"+str(self.battery))
+        
     def turn(self, direction:str):
         
         start_time = rospy.Time.now().to_sec()
@@ -56,25 +73,7 @@ class Turtle_mover:
         msg.angular.z=0
         self.pub.publish(msg)
         self.battery-=5
-    
-    
-    def forward(self, time:float):
-        #moves the turtle forward for 2 s
-        start_time = rospy.Time.now().to_sec()
-        msg=Twist()
-        if self.battery<0:
-            rospy.loginfo("Battery Low!")
-            return
-        while rospy.Time.now().to_sec() - start_time < time:
-            msg.linear.x= 1.0
-            msg.angular.z=0.0
-            self.pub.publish(msg)
-            self.rate.sleep()
-            
-        msg.linear.x = 0.0  # Stop moving
-        self.pub.publish(msg)
-        self.battery-=time*5
-        print("Current Battery Level:"+str(self.battery))
+        rospy.loginfo("Current Battery Level:"+str(self.battery))
 
 
     def heal(self):
