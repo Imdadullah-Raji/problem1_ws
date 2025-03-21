@@ -9,7 +9,7 @@ import math
 class Turtle_mover:
     def __init__(self):
         self.command= ''
-        #self.pub= rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size=10)
+        #self.pub= rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size=10) #run on turtlesim_node if gazebo isnt available
         self.pub= rospy.Publisher('/cmd_vel', Twist, queue_size=10)
         self.rate= rospy.Rate(10)
         self.battery= 100
@@ -33,8 +33,6 @@ class Turtle_mover:
             self.turn('r')
         elif self.command== 'H':
             self.heal()
-        else:
-            pass
             
             
     def turn(self, direction:str):
@@ -58,7 +56,7 @@ class Turtle_mover:
         msg.angular.z=0
         self.pub.publish(msg)
         self.battery-=5
-        pass
+    
     
     def forward(self, time:float):
         #moves the turtle forward for 2 s
@@ -70,10 +68,9 @@ class Turtle_mover:
         while rospy.Time.now().to_sec() - start_time < time:
             msg.linear.x= 1.0
             msg.angular.z=0.0
-            
             self.pub.publish(msg)
-            
             self.rate.sleep()
+            
         msg.linear.x = 0.0  # Stop moving
         self.pub.publish(msg)
         self.battery-=time*5
@@ -90,14 +87,9 @@ class Turtle_mover:
 
 
 if __name__=='__main__':
-    pass
     
     rospy.init_node('control_node')
     turtle_mover= Turtle_mover()
-    #publish in /turtle1/cmd_vel
-    #pub= rospy.Publisher('/turtle1/cmd_vel', Twist, queue_size=10)
-    #published inside Turtle_mover() constructor
-    #retrieve the command from source node
     sub = rospy.Subscriber('/src_to_control', String, callback= turtle_mover.execute_command)
 
     rospy.spin()
