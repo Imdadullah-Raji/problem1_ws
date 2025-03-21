@@ -20,10 +20,6 @@ def get_message():
                 message= 'f5'
             elif "forward" in text:
                 message= 'f'
-            elif "up" in text:
-                message= 'u'
-            elif "down" in text:
-                message= 'd'
             elif 'left' in text:
                 message= 'l'
             elif 'right' in text:
