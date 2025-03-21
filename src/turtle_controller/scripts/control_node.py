@@ -14,7 +14,6 @@ class Turtle_mover:
         self.rate= rospy.Rate(10)
         self.battery= 100
 
-    
     def execute_command(self, msg:String):
         self.command = msg.data.strip()
     
@@ -34,7 +33,7 @@ class Turtle_mover:
         elif self.command== 'H':
             self.heal()
             
-        def forward(self, time:float):
+    def forward(self, time:float):
         #moves the turtle forward for 2 s
         start_time = rospy.Time.now().to_sec()
         msg=Twist()
@@ -66,9 +65,7 @@ class Turtle_mover:
                 msg.angular.z=1.0
             else:
                 msg.angular.z= -1.0
-            
-            self.pub.publish(msg)
-            
+            self.pub.publish(msg) 
             self.rate.sleep()
         msg.angular.z=0
         self.pub.publish(msg)
